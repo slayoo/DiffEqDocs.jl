@@ -1,0 +1,30 @@
+name: Documentation
+
+on:
+  pull_requests:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        julia-version: [1]
+        julia-arch: [x86]
+        os: [ubuntu-latest]
+    steps:
+      - uses: julia-actions/setup-julia@latest
+        with:
+          version: ${{ matrix.julia-version }}
+      - name: Pkg.add("CompatHelper")
+        run: |
+          julia --project=docs -e '
+            println("--- :julia: Instantiating project")
+            using Pkg
+            Pkg.develop(PackageSpec(path=pwd()))
+            Pkg.instantiate()
+            println("--- :julia: Adding OrdinaryDiffEq from master")
+            Pkg.develop("OrdinaryDiffEq")
+            println("--- :julia: Building documentation")
+            include("docs/make.jl")
+          '
