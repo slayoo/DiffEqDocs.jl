@@ -16,8 +16,8 @@ jobs:
       - uses: julia-actions/setup-julia@latest
         with:
           version: ${{ matrix.julia-version }}
-      - name: Pkg.add("CompatHelper")
-        run: |
+      - run: |
+          pwd
           julia --project=docs -e '
             println("--- :julia: Instantiating project")
             using Pkg
